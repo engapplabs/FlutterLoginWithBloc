@@ -7,53 +7,67 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = Provider.of(context);
     return new Container(
-        margin: new EdgeInsets.all(20.0),
-        child: new Column(children: [
+      margin: new EdgeInsets.all(20.0),
+      child: new Column(
+        children: [
           emailField(bloc),
           passwordField(bloc),
           new SizedBox(height: 10.0),
-          submitButton(),
-        ]));
+          submitButton(bloc),
+        ],
+      ),
+    );
   }
 
   Widget emailField(Bloc bloc) {
-    return new StreamBuilder(
-      stream: bloc.email,
-      builder: (context, snapshot) {
-        return new TextField(
-          onChanged: bloc.changeEmail,
-          keyboardType: TextInputType.emailAddress,
-          decoration: new InputDecoration(
-            hintText: 'you@example.com',
-            labelText: 'Email',
-            errorText: snapshot.error,
-          ),
-        );
-      },
-    ); 
-  }
-
-  Widget passwordField(Bloc bloc) {
-    return new StreamBuilder(
-        stream: bloc.password,
+    return StreamBuilder(
+        stream: bloc.email,
         builder: (context, snapshot) {
-          new TextField(
-            onChanged: bloc.changePassword,
-            obscureText: true,
-            decoration: new InputDecoration(
-              hintText: 'Password',
-              labelText: 'Password',
+          return TextField(
+            /*onChanged: (newValue){
+            bloc.changeEmail(newValue);
+          },*/
+            onChanged: bloc.changeEmail,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: 'you@email.com',
+              labelText: 'Email',
               errorText: snapshot.error,
             ),
           );
         });
   }
 
-  Widget submitButton() {
-    return new RaisedButton(
-      child: new Text('Login'),
-      color: Colors.blue,
-      onPressed: () {},
+  Widget passwordField(Bloc bloc) {
+    return StreamBuilder(
+        stream: bloc.password,
+        builder: (context, snapshot) {
+          return TextField(
+            onChanged: bloc.changePassword,
+            obscureText: true,
+            decoration: InputDecoration(
+              hintText: 'Senha',
+              labelText: 'Senha',
+              errorText: snapshot.error,
+            ),
+          );
+        });
+  }
+
+  Widget submitButton(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.submitValid,
+      builder: (context, snapshot) {
+        return RaisedButton(
+          child: Text('Entrar'),
+          color: Colors.blue,
+          onPressed: snapshot.hasError
+              ? null
+              : () {
+                  print("Oi");
+                },
+        );
+      },
     );
   }
 }
